@@ -17,4 +17,14 @@ router.get("/api/matches", async (req, res) => {
   }
 });
 
+router.get("/api/players", async (req, res) => {
+  try {
+    let players = await DB.Players.allPlayerRankingStats();
+    res.json(players);
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+  }
+});
+
 export default router;

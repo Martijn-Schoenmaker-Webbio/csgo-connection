@@ -1,36 +1,46 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 
-class App extends React.Component<IAppProps, IAppState> {
-  constructor(props: IAppProps) {
-    super(props);
-    this.state = {
-      name: null
-    };
-  }
+const App = (props: IAppProps) => {
+  const [players, setPlayers] = useState([]);
 
-  async componentWillMount() {
-    try {
-      let r = await fetch("/api/hello");
-      let name = await r.json();
-      this.setState({ name });
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  const fetchplayers = async () => {
+    const r = await fetch("/api/players");
+    const players = await r.json();
+    setPlayers(players);
+  };
 
-  render() {
-    return (
-      <main className="container my-5">
-        <h1 className="text-primary text-center">Hello {this.state.name}!</h1>
-      </main>
-    );
-  }
-}
+  useEffect(() => {
+    fetchplayers();
+  }, []);
 
-export interface IAppProps {}
+  return (
+    <table>
+      <tbody>
+        <tr>
+          <th>#</th>
+          <th>RP</th>
+          <th>Player</th>
+          <th>Form</th>
+          <th>Forecast</th>
+        </tr>
 
-export interface IAppState {
-  name: string;
+        {players.map((player, index) => {
+          return (
+            <tr key={player.id}>
+              <td>{index}</td>
+              <td>{10}</td>
+              <td>{player.name}</td>
+              <td>{player.name}</td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  );
+};
+
+export interface IAppProps {
+  players: Array<any>;
 }
 
 export default App;
