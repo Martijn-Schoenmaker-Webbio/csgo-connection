@@ -17,40 +17,53 @@ const App = (props: IAppProps) => {
   }, []);
 
   return (
-    <table>
-      <tbody>
-        <tr>
-          <th>#</th>
-          <th>RP</th>
-          <th>Player</th>
-          <th>Form</th>
-          <th>Forecast</th>
-        </tr>
-
-        {players.map((player, index) => {
-          const rankOne = getRankFromMatches(player.previousRanks, 0, 30);
-          const rankTwo = getRankFromMatches(player.previousRanks, 1, 30);
-          const rankThree = getRankFromMatches(player.previousRanks, 2, 30);
-          return (
-            <tr key={player.id}>
-              <td>{index}</td>
-              <td>{player.currentRank}</td>
-              <td>{`${rankOne} - ${rankTwo} - ${rankThree}`}</td>
-              <td>{player.name}</td>
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+    <div className="container">
+      <table className="table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>RP</th>
+            <th>Player</th>
+            <th>Form</th>
+            <th>Forecast</th>
+          </tr>
+        </thead>
+        <tbody>
+          {players.map((player, index) => {
+            return (
+              <tr key={player.id}>
+                <td>{index + 1}</td>
+                <td>{player.currentRank}</td>
+                <td>{player.name}</td>
+                <td>
+                  {getPreviousRanks(player.previousRanks, 4, 30).map(rank => {
+                    return `${rank} - `;
+                  })}
+                </td>
+                <td>{player.name}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
   );
 };
 
-const getRankFromMatches = (arr, matchToStartFrom: number, amountOfMatches: number) => {
-  if (arr.length - 1 < matchToStartFrom) {
-    return arr;
+const getPreviousRanks = (arr, amountOfRanks, amountOfMatches) => {
+  const rankAmount = arr.length < amountOfRanks ? arr.length : amountOfRanks;
+  const matchesAmount = arr.length < amountOfMatches ? arr.length : amountOfMatches;
+  let ranks = [];
+  for (let i = 0; i < rankAmount; i++) {
+    ranks.push(getRankFromMatches(arr, i, matchesAmount));
   }
+  return ranks;
+};
+
+const getRankFromMatches = (arr, matchToStartFrom: number, amountOfMatches: number) => {
   const endOfArray = matchToStartFrom + amountOfMatches;
-  return arr.slice(matchToStartFrom, endOfArray).reduce((acc, curr) => acc + curr);
+  const rankArray = arr.slice(matchToStartFrom, endOfArray).reduce((acc, curr) => acc + curr);
+  return rankArray;
 };
 
 export interface IAppProps {
