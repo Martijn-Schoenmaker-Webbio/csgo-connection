@@ -9,34 +9,33 @@ export const allPlayerStats = async () => {
 };
 
 export const allPlayerRankingStats = async () => {
-  let newPlayerArray = [];
   let players = await all();
-
   if (players) {
-    return players.map(player => {
-      return new Promise((resolve, reject) => {
-        Connection.query(selectLastRanks(player.id), (err, results) => {
-          if (err) {
-            return reject(err);
-          }
-          console.log(results);
-          return resolve(results);
-        });
-        return resolve(player);
-      });
+    const mappedPlayers: Promise<any>[] = players.map(player => {
+      return addLevelsToPlayer(player);
     });
+    return await Promise.all(mappedPlayers);
   }
-  // .then((results: {}[]) => results.map(player => {
-  //       return new Promise((resolve, reject) => {
-  //         Connection.query(selectLastRanks(player.id), (err, results) => {
-  //           if (err) {
-  //             return reject(err);
-  //           }
-  //           console.log(results);
-  //           resolve(results);
-  //         });
-  //       });
-  //     })
+};
+
+const addLevelsToPlayer = player => {
+  return new Promise((resolve, reject) => {
+    Connection.query(selectLastRanks(player.steamId), (err, results) => {
+      if (err) {
+        return reject(err);
+      }
+
+      const levels = results.map(row => {
+        return row.level;
+      });
+
+      const currentRank = levels.slice(0, 30).reduce((acc, curr) => acc + curr);
+
+      const newPlayer = { ...player, currentRank: currentRank, previousRanks: levels };
+
+      return resolve(newPlayer);
+    });
+  });
 };
 
 export default {
@@ -62,7 +61,7 @@ const selectLastRanks = (playerSteamId, amountOfMatches = 33) => {
   return `SELECT level
 FROM (matchStatistics a
 INNER JOIN matches b ON a.matchId = b.id)
-WHERE a.playerSteamId = ${playerSteamId} AND b.isValidMatch = 1
+WHERE a.playerSteamId = '${playerSteamId}' AND b.isValidMatch = 1
 ORDER BY a.matchId
 DESC LIMIT ${amountOfMatches}`;
 };
