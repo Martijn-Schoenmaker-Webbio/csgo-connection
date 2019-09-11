@@ -30,6 +30,7 @@ const addLevelsToPlayer = player => {
       });
 
       const currentRank = levels.slice(0, 30).reduce((acc, curr) => acc + curr);
+      // const test = await getPlayerAvatar(player.steamId64);
 
       const newPlayer = { ...player, currentRank: currentRank, previousRanks: levels };
 
@@ -53,6 +54,27 @@ const promiseQuery = query => {
       return resolve(results);
     });
   });
+};
+
+const getPlayerAvatar = async (steamId: string): Promise<string> => {
+  try {
+    const resultLol = await fetch(
+      `http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=79B6EEE9AE83FC81458CA2C392B5BB37&steamids=${steamId}`,
+      {
+        method: "get"
+      }
+    );
+
+    const text: string = await resultLol.text();
+    let trimmedtext = text.split("[")[1];
+    trimmedtext = trimmedtext.split("]")[0];
+
+    const player = JSON.parse(trimmedtext);
+
+    return player.avatarfull;
+  } catch (error) {
+    return "";
+  }
 };
 
 const allPlayersQuery = `SELECT * from players where isFakeClient = 0`;
