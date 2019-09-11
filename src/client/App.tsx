@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 const App = (props: IAppProps) => {
   const [players, setPlayers] = useState([]);
 
+  const MATCHES_FOR_RANK = 30;
+
   const fetchplayers = async () => {
     const r = await fetch("/api/players");
     const players = await r.json();
@@ -18,36 +20,79 @@ const App = (props: IAppProps) => {
 
   return (
     <div className="container">
-      <table className="table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>RP</th>
-            <th>Player</th>
-            <th>Form</th>
-            <th>Forecast</th>
-          </tr>
-        </thead>
-        <tbody>
-          {players.map((player, index) => {
-            return (
-              <tr key={player.id}>
-                <td>{index + 1}</td>
-                <td>{player.currentRank}</td>
-                <td>{player.name}</td>
-                <td>
-                  {getPreviousRanks(player.previousRanks, 4, 30).map(rank => {
-                    return `${rank} - `;
-                  })}
-                </td>
-                <td>{player.name}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+      <div className="table-container">
+        <table className="table table-dark table-striped">
+          <thead>
+            <tr key={1090}>
+              <th className="position">#</th>
+              <th className="current-rank">RP</th>
+              <th className="name">Player</th>
+              <th className="form">Form</th>
+              <th className="forecast">Forecast</th>
+            </tr>
+          </thead>
+          <tbody>
+            {players.map((player, index) => {
+              return (
+                <tr key={player.id}>
+                  <td className="position">{index + 1}</td>
+                  <td className="current-rank">
+                    {player.currentRank}
+                    <sup className="difference-in-rank">
+                      {index !== 0 && `-${players[index - 1].currentRank - player.currentRank}`}
+                    </sup>
+                  </td>
+                  <td className="name">{player.name}</td>
+                  <td className="form">
+                    {getPreviousRanks(player.previousRanks, 4, MATCHES_FOR_RANK)
+                      .reverse()
+                      .map((rank, index, arr) => {
+                        if (index === 0) {
+                          return;
+                        }
+                        return (
+                          <span className="form-item">
+                            {rank}
+                            <span className="growth">{setGrowthIcon(rank - arr[index - 1])}</span>
+                          </span>
+                        );
+                      })}
+                  </td>
+                  <td className="forecast">
+                    {getForecast(player.previousRanks, 3, MATCHES_FOR_RANK).map(rank => {
+                      return <span className="forecast-item">{rank}</span>;
+                    })}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
+};
+
+const setGrowthIcon = (number: number) => {
+  const value = Math.sign(number);
+
+  if (value === 1) {
+    return <span className="positive">▾</span>;
+  } else if (value === -1) {
+    return <span className="negative">▾</span>;
+  } else {
+    return <span className="even">・</span>;
+  }
+};
+
+const getForecast = (arr, amountOfRanks, amountOfMatches) => {
+  const rankAmount = arr.length < amountOfRanks ? arr.length : amountOfRanks;
+  const matchesAmount = arr.length < amountOfMatches - 1 ? arr.length - 1 : amountOfMatches - 1;
+  let ranks = [];
+  for (let i = matchesAmount; i > matchesAmount - rankAmount; i--) {
+    ranks.push(arr[i]);
+  }
+  return ranks;
 };
 
 const getPreviousRanks = (arr, amountOfRanks, amountOfMatches) => {

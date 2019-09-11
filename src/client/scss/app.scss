@@ -1,5 +1,137 @@
 $theme-colors: (
-    'primary': #0091ea //Covalence Blue!  :D
+  "primary": #0091ea //Covalence Blue!  :D
 );
 
-@import '../../../node_modules/bootstrap/scss/bootstrap.scss';
+@import "../../../node_modules/bootstrap/scss/bootstrap.scss";
+
+@import url("https://fonts.googleapis.com/css?family=IBM+Plex+Mono:300,300i,400,400i,500,500i&display=swap");
+
+* {
+  font-family: "IBM Plex Mono", monospace;
+}
+
+body,
+html {
+  background-color: #000515;
+}
+
+.table-container {
+  background: linear-gradient(125.7deg, #0b214d 0%, #040e2f 59.9%, #040e2f 100%);
+  padding: 40px;
+}
+
+.table-dark {
+  background: none;
+}
+
+.table-dark.table-striped tbody tr:nth-of-type(odd) {
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.table-dark.table-striped tbody tr:nth-of-type(even) {
+  background-color: rgba(0, 0, 0, 0.06);
+}
+
+.table-dark th,
+.table-dark td {
+  border-color: #0d346f;
+  font-size: 14px;
+  font-weight: 300;
+}
+
+.table thead th {
+  vertical-align: bottom;
+  border: none;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #858a9a;
+  font-weight: 500;
+}
+
+th.forecast {
+  width: 120px;
+}
+
+th.form {
+  width: 200px;
+  text-align: center;
+}
+
+td.form {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+td.form,
+td.forecast {
+  text-align: right;
+}
+
+td.position {
+  width: 40px;
+}
+
+td.current-rank {
+  width: 100px;
+}
+
+.difference-in-rank {
+  font-size: 10px;
+  opacity: 0.5;
+  margin-left: 4px;
+}
+
+.growth {
+  margin-left: 4px;
+  display: flex;
+  width: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-item {
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  &:not(:last-child) {
+    margin-right: 16px;
+    color: rgba(171, 212, 255, 0.5);
+  }
+}
+
+.forecast-item {
+  color: white;
+
+  &:not(:last-child) {
+    margin-right: 16px;
+  }
+  &:not(:first-child) {
+    color: rgba(171, 212, 255, 0.5);
+  }
+}
+
+.positive,
+.negative {
+  font-size: 10px;
+}
+
+.negative {
+  color: #e00000;
+}
+
+.even {
+  color: #b2b2b2;
+}
+
+.positive {
+  display: inline-block;
+  color: #00ff75;
+  -moz-transform: rotate(-180deg);
+  -ms-transform: rotate(-180deg);
+  -o-transform: rotate(-180deg);
+  -webkit-transform: rotate(-180deg);
+  transform: rotate(-180deg);
+}

@@ -12,7 +12,6 @@ router.get("/api/matches", async (req, res) => {
     let matches = await DB.Matches.all();
     res.json(matches);
   } catch (e) {
-    console.log(e);
     res.sendStatus(500);
   }
 });
@@ -20,10 +19,8 @@ router.get("/api/matches", async (req, res) => {
 router.get("/api/players", async (req, res) => {
   try {
     let players = await DB.Players.allPlayerRankingStats();
-    console.log(players);
     res.json(players);
   } catch (e) {
-    console.log(e);
     res.sendStatus(500);
   }
 });
