@@ -2,7 +2,7 @@ import { Connection } from "./index";
 
 export const all = async () => {
   return new Promise((resolve, reject) => {
-    Connection.query("SELECT * FROM matchStatistics", (err, results) => {
+    Connection.query(mostRecentMatch, (err, results) => {
       if (err) {
         return reject(err);
       }
@@ -14,3 +14,8 @@ export const all = async () => {
 export default {
   all
 };
+
+const mostRecentMatch = `SELECT * 
+FROM matches
+WHERE isValidMatch = 1
+ORDER BY id DESC LIMIT 1`;
