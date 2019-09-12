@@ -79,7 +79,7 @@ const getPlayerAvatar = async (steamId: string): Promise<string> => {
 
 const allPlayersQuery = `SELECT * from players where isFakeClient = 0`;
 
-const selectLastRanks = (playerSteamId, amountOfMatches = 33) => {
+const selectLastRanks = (playerSteamId, amountOfMatches = 60) => {
   return `SELECT level
 FROM (matchStatistics a
 INNER JOIN matches b ON a.matchId = b.id)
