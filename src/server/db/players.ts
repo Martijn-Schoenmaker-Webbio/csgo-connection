@@ -26,13 +26,15 @@ const addLevelsToPlayer = player => {
       }
 
       const levels = results.map(row => {
-        return row.level;
+        const test = { matchId: row.matchId, level: row.level };
+
+        return test;
       });
 
-      const currentRank = levels.slice(0, 30).reduce((acc, curr) => acc + curr);
+      const currentRank = levels.slice(0, 30).reduce((acc, curr) => ({ level: acc.level + curr.level }));
       // const test = await getPlayerAvatar(player.steamId64);
 
-      const newPlayer = { ...player, currentRank: currentRank, previousRanks: levels };
+      const newPlayer = { ...player, currentRank: currentRank.level, previousRanks: levels };
 
       return resolve(newPlayer);
     });
@@ -80,7 +82,7 @@ const getPlayerAvatar = async (steamId: string): Promise<string> => {
 const allPlayersQuery = `SELECT * from players where isFakeClient = 0`;
 
 const selectLastRanks = (playerSteamId, amountOfMatches = 60) => {
-  return `SELECT level
+  return `SELECT matchId, level
 FROM (matchStatistics a
 INNER JOIN matches b ON a.matchId = b.id)
 WHERE a.playerSteamId = '${playerSteamId}' AND b.isValidMatch = 1

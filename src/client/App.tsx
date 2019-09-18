@@ -99,8 +99,9 @@ const getForecast = (arr, amountOfRanks, amountOfMatches) => {
   const matchesAmount = arr.length < amountOfMatches - 1 ? arr.length - 1 : amountOfMatches - 1;
   let ranks = [];
   for (let i = matchesAmount; i > matchesAmount - rankAmount; i--) {
-    ranks.push(arr[i]);
+    ranks.push(arr[i].level);
   }
+
   return ranks;
 };
 
@@ -111,12 +112,15 @@ const getPreviousRanks = (arr, amountOfRanks, amountOfMatches) => {
   for (let i = 0; i < rankAmount; i++) {
     ranks.push(getRankFromMatches(arr, i, matchesAmount));
   }
+
   return ranks;
 };
 
 const getRankFromMatches = (arr, matchToStartFrom: number, amountOfMatches: number) => {
   const endOfArray = matchToStartFrom + amountOfMatches;
-  const rankArray = arr.slice(matchToStartFrom, endOfArray).reduce((acc, curr) => acc + curr);
+  const rankArray = arr.slice(matchToStartFrom, endOfArray).reduce((acc, curr) => ({ level: acc.level + curr.level }))
+    .level;
+
   return rankArray;
 };
 
