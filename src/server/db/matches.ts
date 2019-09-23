@@ -23,7 +23,8 @@ export const all2 = async () => {
 };
 
 export default {
-  all
+  all,
+  all2
 };
 
 const mostRecentMatch = `SELECT * 

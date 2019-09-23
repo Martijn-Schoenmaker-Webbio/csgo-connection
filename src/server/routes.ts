@@ -9,7 +9,7 @@ router.get("/api/hello", (req, res, next) => {
 
 router.get("/api/matches", async (req, res) => {
   try {
-    let matches = await DB.Matches.all();
+    let matches = await DB.Matches.all2();
     res.json(matches);
   } catch (e) {
     res.sendStatus(500);
